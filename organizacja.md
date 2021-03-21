@@ -60,6 +60,3 @@ Po wszelakie szczególy na temat powyższych tematów -- zwrócić się do Kalet
 2. aplikacje webowe (Django/Flask)
 3. aplikacje narzędziowe
 4. biblioteki
-
-kjdjusklj iyuglsqg ygl q modyfikacja
-
