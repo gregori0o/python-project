@@ -2,7 +2,7 @@
 
 1. Możliwość zdalnego wykonywania komend systemowych na komputerze. 
 2. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. 
-3. Wpisywanie dowolnych komend i wykonywanie ich na komputerze z poziomu telefonu (zatem klawiatura).
+3. Wpisywanie dowolnych komend i wykonywanie ich na komputerze z poziomu telefonu (zatem klawiatura).   
 
 
 Ewentualnie interakcje w drugą stronę. 
@@ -15,3 +15,8 @@ Ewentualnie interakcje w drugą stronę.
 3. [Talk na temat BeeWare](https://www.youtube.com/watch?v=xezYYBL7nk0)
 4. [Kivy](https://kivy.org/#home)
 5. [Webowe apki w pythonie](https://opensource.com/article/20/8/python-android-mobile)
+6. https://people.csail.mit.edu/albert/bluez-intro/c212.html
+7. https://www.pythonpool.com/an-introduction-to-python-for-android-development/
+8. https://github.com/eliasdorneles/tictactoe-voc
+9. https://code.google.com/archive/p/pybluez/downloads
+10. https://github.com/pybluez/pybluez
