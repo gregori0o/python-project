@@ -61,4 +61,5 @@ Po wszelakie szczególy na temat powyższych tematów -- zwrócić się do Kalet
 3. aplikacje narzędziowe
 4. biblioteki
 
+kjdjusklj iyuglsqg ygl q modyfikacja
 
