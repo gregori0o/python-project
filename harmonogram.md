@@ -25,7 +25,7 @@ Kacper Kafara -- (K)
 *  Implementacja funkcjonalności:
     1. Możliwość zdalnego wykonywania wybranych komend (przewidzianych w funkcjonalnościach) (K & G)
 
-### 6 lab
+### 6 laboratoria
 
 1. Możliwość zdalnego wykonania dowolnej komendy (komenda wpisywana przez użytkownika) (K)
 2. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. (G)
