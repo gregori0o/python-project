@@ -20,3 +20,16 @@ Ewentualnie interakcje w drugą stronę.
 8. https://github.com/eliasdorneles/tictactoe-voc
 9. https://code.google.com/archive/p/pybluez/downloads
 10. https://github.com/pybluez/pybluez
+
+
+
+## Harmonogram prac
+
+1. Zaimplementowanie modułu sieciowego, połączenie telefonu z komputerm (możliwość przesyłu i odbioru komunikatów)
+2. Zaimplementowanie prototypu interfejsu desktopowego. 
+3. Zaimplementowanie komunikacji telefon - komputer 
+4. Zaimplemenotwanie interfejisu na androida
+5. Implementacja funkcjonalności:
+    1. Możliwość zdalnego wykonywania wybranych komend (interfejs w postaci przycisków) 
+    2. Możliwość zdalnego wykonania dowolnej komendy (komenda wpisywana przez użytkownika)
+    3. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. 
