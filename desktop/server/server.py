@@ -65,7 +65,7 @@ class Server(object):
         
         self.connection, self.connection_address = self.socket.accept()
         
-        self.logger.info('%s initialized connection with server (%s, %s)' % (self.connection, self.ip4_address, self.port))
+        self.logger.info('%s initialized connection with server (%s, %s)' % (str(self.connection.getsockname()), self.ip4_address, self.port))
 
 
     def handle_connection(self):
@@ -84,6 +84,8 @@ class Server(object):
             answer = self.answer_handler(received_data)
 
             self.connection.send(answer.encode())
+
+        self.close_connection()
          
 
     def handle_input(self, data: str):
@@ -99,6 +101,7 @@ class Server(object):
             self.logger.warning('Closing null connection')
             return
 
+        self.logger.info('Closing connection with %s' % (str(self.connection.getsockname())))
         self.connection.close()
         
         
@@ -106,11 +109,12 @@ if __name__ == '__main__':
     print(__name__)
     server = Server()
 
-    server.wait_for_connection()
+    while True:
+        server.wait_for_connection()
     
-    server.handle_connection()
+        server.handle_connection()
 
-    server.close_connection()
+    # server.close_connection()
 
     print(server)
     
