@@ -89,7 +89,7 @@ class Server(object):
          
 
     def handle_input(self, data: str):
-        print("Received from client:", data)
+        print("Received from client: KASIA XD", data)
 
     
     def handle_answer(self, data: str):
