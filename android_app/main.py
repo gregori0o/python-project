@@ -91,9 +91,12 @@ class QRreader (Screen):
         port = data.split(',')[1]        
         
         client_socket = sck.socket()
+        client_socket.settimeout(100)
         client_socket.connect((ip, int(port))) 
 
         client_socket.send('OMG'.encode())
+        string = client_socket.recv(1024).decode()
+        
         
         if not data:
             self.read_text.text = "Connection failed. Enter new data."

@@ -30,6 +30,7 @@ class Server(object):
         self.port: int          = 0       
         self.connection         = None
         self.connection_address = None
+        self.socket.settimeout(100)
         
         # self.port == 0 ==> system automatically assignes port number
         # '' ==> socket is not binded to particular host (if hostname was passed, socket would be 
@@ -39,7 +40,8 @@ class Server(object):
         _, self.port = self.socket.getsockname()
 
         self.socket.listen(self.max_connections)
-        
+        self.socket.settimeout(100)
+
         if client_input_handler is not None: self.input_handler = client_input_handler
         else: self.input_handler = self.handle_input
         
@@ -56,6 +58,7 @@ class Server(object):
             raise UnboundLocalError('Waiting for connection with null socket')
 
         self.connection, self.connection_address = self.socket.accept()
+        self.connection.settimeout(100)
 
 
     def handle_connection(self):
@@ -87,16 +90,13 @@ class Server(object):
 
     def close_connection(self):
         if self.connection is None:
-            self.logger.warning('Closing null connection')
             return
 
-        self.logger.info('Closing connection with %s' % (str(self.connection.getsockname())))
         self.connection.close()
         
     def run(self, queue: Queue):
         while True:
             self.wait_for_connection()
-            queue.put(None)
             self.handle_connection()
 
     
@@ -105,11 +105,8 @@ class Server(object):
 if __name__ == '__main__':
     print(__name__)
     server = Server()
-
-    while True:
-        server.wait_for_connection()
-        print("czekam na polacznenie...")
-        server.handle_connection()
+    print(server)
+    server.run(None)
 
     # server.close_connection()
 
