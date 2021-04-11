@@ -1,11 +1,8 @@
+from queue import Queue
 import socket as sc
-import logging as lg
 import sys
 import os
 from typing import Callable
-
-# lg.basicConfig(filename='../log/log', filemode='w', level=lg.DEBUG, encoding='utf-8')
-lg.basicConfig(level=lg.DEBUG)
 
 class Server(object): 
     def __init__(   self, 
@@ -13,7 +10,6 @@ class Server(object):
                     buffer_size: int = 1024, 
                     client_input_handler = None, 
                     server_answer_handler = None):
-        self.logger             = lg.getLogger(__name__)
         # self.logger.setLevel()
         
         # on default only 1 connection is allowed 
@@ -50,28 +46,21 @@ class Server(object):
         if server_answer_handler is not None: self.answer_handler = server_answer_handler
         else: self.answer_handler = self.handle_answer
         
-        
-        self.logger.debug('Created Server object, specs:%s' % (str(self)))
-        
 
     def __str__(self):
-        # ret = f"Server\n\t{'Hostname:':<15}{self.host_name:>30}\n\t{'IPv4:':<15}{self.ip4_address:>30}"
         return 'Server:\n\tHostname: %s\n\tIPv4: %s\tPort: %s' % (self.host_name, self.ip4_address, self.port)
         
 
     def wait_for_connection(self):
         if self.socket is None:
-            self.logger.error('Waiting for connection with null socket; ATM: %s' % (str(self)))
-        
+            raise UnboundLocalError('Waiting for connection with null socket')
+
         self.connection, self.connection_address = self.socket.accept()
-        
-        self.logger.info('%s initialized connection with server (%s, %s)' % (str(self.connection.getsockname()), self.ip4_address, self.port))
 
 
     def handle_connection(self):
         if self.connection is None:
-            self.logger.error('Handling null connection!')
-            raise UnboundLocalError
+            raise UnboundLocalError('Handling null connection')
         
         while True:
             received_data = self.connection.recv(self.buffer_size).decode()
@@ -104,10 +93,12 @@ class Server(object):
         self.logger.info('Closing connection with %s' % (str(self.connection.getsockname())))
         self.connection.close()
         
-    def run(self):
+    def run(self, queue: Queue):
         while True:
             self.wait_for_connection()
+            queue.put(None)
             self.handle_connection()
+
     
         
         
