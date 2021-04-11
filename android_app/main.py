@@ -5,6 +5,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy_garden.zbarcam import ZBarCam
+import socket as sck
 
 class MainApp(App):
     def build(self):
@@ -86,8 +87,14 @@ class QRreader (Screen):
     def confirm (self, *args):
         data = self.read_text.text
 
-        #connect with data
+        ip = data.split(',')[0]
+        port = data.split(',')[1]        
+        
+        client_socket = sck.socket()
+        client_socket.connect((ip, int(port))) 
 
+        client_socket.send('OMG'.encode())
+        
         if not data:
             self.read_text.text = "Connection failed. Enter new data."
         else:
