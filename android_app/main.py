@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy_garden.zbarcam import ZBarCam
 
 class MainApp(App):
     def build(self):
@@ -54,14 +55,12 @@ class QRreader (Screen):
                       size_hint=(.6, .1),
                       pos_hint={'x': .2, 'y': 0.9})
         QR_layout.add_widget(label)
-        #tu ma być qr reader ale nie jest lekko
-        #self.cam = Camera(
-        #              play=True,
-        #              size_hint=(.6, .4),
-        #              pos_hint={'x': .2, 'y': 0.5})
-        #self.cam.start()
-        #QR_layout.add_widget(self.cam)
+        self.zbarcam = ZBarCam (
+                      size_hint=(.6, .4),
+                      pos_hint={'x': .2, 'y': 0.5})
+        QR_layout.add_widget(self.zbarcam)
         self.read_text = TextInput(
+                      text = ', '.join([str(symbol.data) for symbol in self.zbarcam.symbols]),
                       multiline=False,
                       readonly=False,
                       halign="left",
@@ -75,16 +74,10 @@ class QRreader (Screen):
                       pos_hint={'x': .25, 'y': .25})
         make_photo.bind(on_press = self.make_photo)
         QR_layout.add_widget(make_photo)
-        repeat = Button(text="Make new photo",
-                      halign='center',
-                      size_hint=(.3, .1),
-                      pos_hint={'x': .1, 'y': .1})
-        repeat.bind(on_press = self.repeat)
-        QR_layout.add_widget(repeat)
         confirm = Button(text="Confirm",
                       halign='center',
-                      size_hint=(.3, .1),
-                      pos_hint={'x': .6, 'y': .1})
+                      size_hint=(.5, .1),
+                      pos_hint={'x': .25, 'y': .1})
         confirm.bind(on_press = self.confirm)
         QR_layout.add_widget(confirm)
 
@@ -98,6 +91,7 @@ class QRreader (Screen):
         if not data:
             self.read_text.text = "Connection failed. Enter new data."
         else:
+            self.zbarcam.stop()
             self.manager.current = 'main'
 
     def make_photo (self, *args):
