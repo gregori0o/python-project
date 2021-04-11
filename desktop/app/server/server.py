@@ -89,7 +89,7 @@ class Server(object):
          
 
     def handle_input(self, data: str):
-        print("Received from client: KASIA XD", data)
+        print("Received from client: ", data)
 
     
     def handle_answer(self, data: str):
@@ -104,6 +104,12 @@ class Server(object):
         self.logger.info('Closing connection with %s' % (str(self.connection.getsockname())))
         self.connection.close()
         
+    def run(self):
+        while True:
+            self.wait_for_connection()
+            self.handle_connection()
+    
+        
         
 if __name__ == '__main__':
     print(__name__)
@@ -111,7 +117,7 @@ if __name__ == '__main__':
 
     while True:
         server.wait_for_connection()
-    
+        print("czekam na polacznenie...")
         server.handle_connection()
 
     # server.close_connection()
