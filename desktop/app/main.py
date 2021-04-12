@@ -26,9 +26,6 @@ class QRCodeButton(Button):
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             print('Generating QR Code...') 
-            ipv4_server_address = print(os.popen('hostname -I').read(), DEFAULT_PORT)
-            qrcode_img = qrcode.make(f"{ipv4_server_address},{DEFAULT_PORT}")
-            qrcode_img.save('qrcode.png', format='png')
             self.state = not self.state
             
             return True
@@ -73,6 +70,10 @@ class Application(App):
         
     
     def show_qrcode(self, instance, pos):
+        if len(self.qrcode_layout.children) == 0:
+            qrcode_img = qrcode.make(f"{self.ipv4_server_address},{DEFAULT_PORT}")
+            qrcode_img.save('qrcode.png', format='png')
+            self.qrcode_layout.add_widget(Image(source='qrcode.png'))
         self.screen_manager.switch_to(self.screens[1])
 
     
