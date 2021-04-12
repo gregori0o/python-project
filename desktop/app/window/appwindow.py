@@ -2,6 +2,7 @@ import kivy
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.widget import Widget
 
 kivy.require('2.0.0')
@@ -25,7 +26,7 @@ class QRCodeButton(Button):
         
 
 
-class MainWindow(BoxLayout):
+class MainWindow(ScreenManager):
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
         
