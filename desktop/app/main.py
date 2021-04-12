@@ -54,7 +54,7 @@ class Application(App):
         self.screens[0].add_widget(self.main_layout)
 
         self.qrcode_layout = BoxLayout()
-        self.qrcode_layout.add_widget(Image(source='qrcode.png'))
+        # self.qrcode_layout.add_widget(Image(source='qrcode.png'))
         self.screens[1].add_widget(self.qrcode_layout) 
         
         reactor.listenTCP(DEFAULT_PORT, ServerFactory(self))
