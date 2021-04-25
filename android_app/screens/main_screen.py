@@ -132,15 +132,15 @@ class CommandScreen (Screen):
         			  halign='center',
                       font_size='20sp',
                       size_hint=(.6, .1),
-                      pos_hint={'x': .2, 'y': 0.9})
+                      pos_hint={'x': .2, 'y': 0.7})
         command_layout.add_widget(self.label)
         self.read_text = TextInput(
                       multiline=True,
                       readonly=False,
                       halign="left",
-                      font_size=30,
+                      font_size='20sp',
                       size_hint=(.8, .3),
-                      pos_hint={'x': .1, 'y': 0.5})
+                      pos_hint={'x': .1, 'y': 0.4})
         command_layout.add_widget(self.read_text)
         execute = Button(text="Execute command",
                       halign='center',

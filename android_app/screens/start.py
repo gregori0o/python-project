@@ -18,14 +18,14 @@ class StartScreen (Screen):
         exit_button.bind(on_press = self.app.stop)
         first_layout.add_widget(exit_button)
         label_info = Label(text="""
-                        Hello from Kivy, this is remote control for computer app.\n
-                        To connect with latest data please press button 'Restart'.\n
-                        To connect with new data please press button 'Connect'.""",
+                        Remote control for computer.\n
+                        To connect with latest data -> 'Restart'.\n
+                        To connect with new data -> 'Connect'.""",
                       markup=True,
                       halign='center',
                       font_size='20sp',
-                      size_hint=(.65, .2),
-                      pos_hint={'x': .1, 'y': 0.6})
+                      size_hint=(1, .2),
+                      pos_hint={'x': .0, 'y': 0.6})
         first_layout.add_widget(label_info)
         to_connect = Button(text="Connect",
                       halign='center',
