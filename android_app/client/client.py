@@ -1,30 +1,35 @@
-import socket as sck
-from sys import exit
+from __future__ import unicode_literals
+
+from kivy.support import install_twisted_reactor
+
+install_twisted_reactor()
+
+# A Simple Client that send messages to the Echo Server
+from twisted.internet import reactor, protocol
 
 
-def get_port(path: str) -> int: 
-    return int(input('Insert port: '))
+class EchoClient(protocol.Protocol):
+    def connectionMade(self):
+        self.factory.app.on_connection(self.transport)
+
+    def dataReceived(self, data):
+        self.factory.app.print_message(data.decode('utf-8'))
 
 
+class EchoClientFactory(protocol.ClientFactory):
+    protocol = EchoClient
 
-hostname = sck.gethostname()
+    def __init__(self, app):
+        self.app = app
 
-port = get_port('./socket_number.txt')
+    def startedConnecting(self, connector):
+        self.app.print_message('Started to connect.')
 
-if not port:
-    print('Could not read port number.')
-    exit(1)
+    def clientConnectionLost(self, connector, reason):
+        self.app.print_message('Lost connection.')
+        self.app.screenmanager.current = 'start'
 
-
-csocket = sck.socket()
-csocket.connect((hostname, port))
-
-message = input('Client>')
-
-while message.lower().strip() != 'end':
-    csocket.send(message.encode())
-    received_data = csocket.recv(1024).decode()
-    print('From server: ' + received_data)
-    message = input ("Client>")
-    
-csocket.close()
+    def clientConnectionFailed(self, connector, reason):
+        self.app.print_message('Connection failed.')
+        #sleep(1)
+        self.app.screenmanager.current = 'QR'
