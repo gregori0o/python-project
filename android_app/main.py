@@ -31,7 +31,6 @@ class MainApp(App):
 
     def print_message(self, msg):
     	self.label.text = "{}\n".format(msg)
-    	print (self.label.text)
 
 
 if __name__ == "__main__":
