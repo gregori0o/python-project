@@ -4,3 +4,4 @@ log
 __pycache__/
 notes.md
 desktop/app/qrcode.png
+*.png

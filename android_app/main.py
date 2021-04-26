@@ -4,32 +4,10 @@ from kivy.support import install_twisted_reactor
 
 install_twisted_reactor()
 
-# A Simple Client that send messages to the Echo Server
-from twisted.internet import reactor, protocol
+from twisted.internet import reactor
 
+from android_app.client.client import ClientFactory, ClientProtocol
 
-class EchoClient(protocol.Protocol):
-    def connectionMade(self):
-        self.factory.app.on_connection(self.transport)
-
-    def dataReceived(self, data):
-        self.factory.app.print_message(data.decode('utf-8'))
-
-
-class EchoClientFactory(protocol.ClientFactory):
-    protocol = EchoClient
-
-    def __init__(self, app):
-        self.app = app
-
-    def startedConnecting(self, connector):
-        self.app.print_message('Started to connect.')
-
-    def clientConnectionLost(self, connector, reason):
-        self.app.print_message('Lost connection.')
-
-    def clientConnectionFailed(self, connector, reason):
-        self.app.print_message('Connection failed.')
 
 
 from kivy.app import App
@@ -39,7 +17,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy_garden.zbarcam import ZBarCam
-from time import sleep
 
 
 class MainApp(App):
@@ -58,11 +35,12 @@ class MainApp(App):
         return screenmanager
 
     def connect_to_server(self, ip, port):
-        reactor.connectTCP(ip, port, EchoClientFactory(self))
+        reactor.connectTCP(ip, port, ClientFactory(self))
 
     def on_connection(self, connection):
         self.print_message("Connected successfully!")
         self.connection = connection
+        connection.write("[DEV] device name, device ip")
 
     def print_message(self, msg):
         pass
