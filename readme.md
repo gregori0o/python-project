@@ -54,4 +54,14 @@ Kacper Kafara -- (K)
 1. Możliwość zdalnego wykonania dowolnej komendy (komenda wpisywana przez użytkownika) (K)
 2. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. (G)
 3. Ewentualne dokończenie interfejsu (desktop / android). (K & G (w zależności od pozostałych zadań))
- 
+
+
+### Funkcjonalności 
+
+1. Shutdown
+2. Sterowanie głośnością
+3. Poziom jasności 
+4. Sterowanie instancjami przeglądrek (moduł browser)   
+5. Youtube / Netflix (skrót)
+6. Rozłączenie 
+7. Komenda **autorska**  
