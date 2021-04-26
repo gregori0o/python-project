@@ -5,3 +5,6 @@ __pycache__/
 notes.md
 desktop/app/qrcode.png
 *.png
+android_app/buildozer.spec
+android_app/.buildozer/
+android_app/bin/android.app-0.1-armeabi-v7a-debug.apk
