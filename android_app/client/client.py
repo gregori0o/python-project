@@ -1,4 +1,13 @@
+from __future__ import unicode_literals
+
+from kivy.support import install_twisted_reactor
+
+install_twisted_reactor()
+
+# A Simple Client that send messages to the Echo Server
 from twisted.internet.protocol import Protocol, Factory
+from twisted.internet.reactor import reactor
+
 
 class ClientProtocol(Protocol):
     def connectionMade(self):
@@ -19,6 +28,9 @@ class ClientFactory(Factory):
 
     def clientConnectionLost(self, connector, reason):
         self.app.print_message('Lost connection.')
+        self.app.screenmanager.current = 'start'
 
     def clientConnectionFailed(self, connector, reason):
         self.app.print_message('Connection failed.')
+        #sleep(1)
+        self.app.screenmanager.current = 'QR'
