@@ -6,7 +6,7 @@ install_twisted_reactor()
 
 # A Simple Client that send messages to the Echo Server
 from twisted.internet.protocol import Protocol, Factory
-from twisted.internet.reactor import reactor
+from twisted.internet import reactor
 
 
 class ClientProtocol(Protocol):

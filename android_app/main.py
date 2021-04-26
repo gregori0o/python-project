@@ -1,4 +1,4 @@
-from client import EchoClientFactory, reactor
+from client import ClientFactory, reactor
 
 from screens import StartScreen, QRreader, ConnectionScreen, MainScreen, CommandScreen
 
