@@ -1,11 +1,11 @@
-
 from twisted.internet.protocol import Protocol, Factory
-from twisted.internet import reactor
-from twisted.python import failure
-from typing import Tuple
-
+from twisted.python.failure import Failure
+from collections import namedtuple
 
 class AppProtocol(Protocol):
+
+    Client = namedtuple('Client', ('port', 'ip'))
+    
 
     def __init__(self, factory: Factory):
         self.factory = factory
@@ -18,8 +18,16 @@ class AppProtocol(Protocol):
             self.transport.write(response)
             
     def connectionMade(self):
-        self.factory.num_connections += 1
+        self.factory.client = AppProtocol.Client(
+            self.transport.getPeer().port,
+            self.transport.getPeer().host
+        )
+        self.factory.ip = self.transport.getHost().host
+        #debug
+        print(f"Connection estabilished with {self.factory.client}") 
+
         
-        
-    def connectionLost(self, reason: failure.Failure):
-        self.factory.num_connections -= 1
+    def connectionLost(self, reason: Failure):
+        print(f"Closed connection with {self.factory.client}")
+        self.factory.client.port = None
+        self.factory.client.host = None
