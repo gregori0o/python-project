@@ -111,7 +111,7 @@ class MainScreen (Screen):
 
     def exit (self, *args):
       if self.app.connection:
-        self.app.connection.stop()
+        self.app.connection.write("disconnect".encode('utf-8'))
         self.app.connection = None
       self.manager.current = 'start'
 
