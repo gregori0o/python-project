@@ -55,54 +55,54 @@ class MainScreen (Screen):
         command.bind(on_press = self.command)
         main_layout.add_widget(command)
 
-        button_l1 = Button(text="button_l1",
+        self.button_l1 = Button(text="Brightness UP",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .0, 'y': .79})
-        #button_l1.bind(on_press = self.button_l1)
-        main_layout.add_widget(button_l1)
-        button_r1 = Button(text="button_r1",
+        self.button_l1.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_l1)
+        self.button_r1 = Button(text="Volume UP",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .6, 'y': .79})
-        #button_r1.bind(on_press = self.button_r1)
-        main_layout.add_widget(button_r1)
-        button_l2 = Button(text="button_l2",
+        self.button_r1.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_r1)
+        self.button_l2 = Button(text="Brightness DOWN",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .0, 'y': .68})
-        #button_l2.bind(on_press = self.button_l2)
-        main_layout.add_widget(button_l2)
-        button_r2 = Button(text="button_r2",
+        self.button_l2.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_l2)
+        self.button_r2 = Button(text="Volume DOWN",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .6, 'y': .68})
-        #button_r2.bind(on_press = self.button_r2)
-        main_layout.add_widget(button_r2)
-        button_l3 = Button(text="button_l3",
+        self.button_r2.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_r2)
+        self.button_l3 = Button(text="Shutdown",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .0, 'y': .57})
-        #button_l3.bind(on_press = self.button_l3)
-        main_layout.add_widget(button_l3)
-        button_r3 = Button(text="button_r3",
+        self.button_l3.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_l3)
+        self.button_r3 = Button(text="Keyboard",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .6, 'y': .57})
-        #button_r3.bind(on_press = self.button_r3)
-        main_layout.add_widget(button_r3)
-        button_l4 = Button(text="button_l4",
+        self.button_r3.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_r3)
+        self.button_l4 = Button(text="NETFLIX",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .0, 'y': .46})
-        #button_l4.bind(on_press = self.button_l4)
-        main_layout.add_widget(button_l4)
-        button_r4 = Button(text="button_r4",
+        self.button_l4.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_l4)
+        self.button_r4 = Button(text="YOUTUBE",
                       halign='center',
                       size_hint=(.4, .1),
                       pos_hint={'x': .6, 'y': .46})
-        #button_r4.bind(on_press = self.button_r4)
-        main_layout.add_widget(button_r4)
+        self.button_r4.bind(on_press = self.execute_buttons)
+        main_layout.add_widget(self.button_r4)
         mouse = TouchPad (app, size_hint=(1, .4),
                       pos_hint={'x': .0, 'y': .0})
         main_layout.add_widget(mouse)
@@ -110,10 +110,33 @@ class MainScreen (Screen):
         self.add_widget(main_layout)
 
     def exit (self, *args):
-    	self.manager.current = 'start'
+      if self.app.connection:
+        self.app.connection.stop()
+        self.app.connection = None
+      self.manager.current = 'start'
 
     def command (self, *args):
     	self.manager.current = 'command'
+
+    def execute_buttons (self, button, *args):
+      if not self.app.connection:
+        return
+      if button == self.button_l1:
+        self.app.connection.write("cmd brightness-up".encode('utf-8'))
+      elif button == self.button_r1:
+        self.app.connection.write("cmd volume-up".encode('utf-8'))
+      elif button == self.button_l2:
+        self.app.connection.write("cmd brightness-down".encode('utf-8'))
+      elif button == self.button_r2:
+        self.app.connection.write("cmd volume-down".encode('utf-8'))
+      elif button == self.button_l3:
+        self.app.connection.write("cmd shutdown".encode('utf-8'))
+      elif button == self.button_r3:
+        self.app.connection.write("cmd keyboard".encode('utf-8'))
+      elif button == self.button_l4:
+        self.app.connection.write("cmd netflix".encode('utf-8'))
+      elif button == self.button_r4:
+        self.app.connection.write("cmd youtube".encode('utf-8'))
 
 
 class CommandScreen (Screen):
@@ -129,9 +152,9 @@ class CommandScreen (Screen):
         back.bind(on_press = self.back)
         command_layout.add_widget(back)
         self.label = Label(text = "\nEnter command",
-        			  halign='center',
+        			        halign='center',
                       font_size='20sp',
-                      size_hint=(.6, .1),
+                      size_hint=(.6, .2),
                       pos_hint={'x': .2, 'y': 0.7})
         command_layout.add_widget(self.label)
         self.read_text = TextInput(
@@ -155,7 +178,7 @@ class CommandScreen (Screen):
         msg = self.read_text.text
        
         if msg and self.app.connection:
-            self.app.connection.write(msg.encode('utf-8'))
+            self.app.connection.write(("ccmd " + msg).encode('utf-8'))
             self.label.text = "Command has been sent.\n Enter command"
             self.read_text.text = ""
         else:
