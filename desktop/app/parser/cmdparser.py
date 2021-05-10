@@ -37,7 +37,7 @@ class CommandHandler(object):
             'shutdown': ['shutdown', '-h', 'now'],
             'volume-up': ['aamixer', 'sset', 'Master', '2%+'],
             'volume-down': ['aamixer, sset' ,'Master', '5%-'],
-            'onboard': ['onboard']
+            'keyboard': ['onboard']
         }
         self.browser_commands = {
             'netflix': 'www.netflix.com',
