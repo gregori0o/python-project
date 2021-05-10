@@ -29,7 +29,8 @@ class Parser(object):
 
 
 import webbrowser as wb
-from subprocess import PIPE, Popen
+from subprocess import PIPE, Popen, STDOUT
+import os
 
 class CommandHandler(object):
     def __init__(self):
@@ -43,8 +44,8 @@ class CommandHandler(object):
             
         }
         self.browser_commands = {
-            'netflix': 'www.netflix.com',
-            'youtube': 'www.youtube.com'
+            'netflix': 'https://www.netflix.com',
+            'youtube': 'https://www.youtube.com'
         }
         self.parser = Parser()
 
@@ -55,10 +56,16 @@ class CommandHandler(object):
             if cmd[1] in self.browser_commands.keys():
                 wb.open(self.browser_commands[cmd[1]], 1)
             elif cmd[1] in self.regular_commands.keys():
-                Popen(self.regular_commands[cmd[1]], stdout=PIPE)
+                Popen(self.regular_commands[cmd[1]], stdout=STDOUT)
             else:
                 print("CommandHandler: invalid command")
         elif cmd[0] == 'ccmd':
-            Popen([command], stdout=PIPE)
+            try:
+                print(f'Executing: {cmd[1:]}')
+                process = Popen(cmd[1:], stdout=PIPE, stderr=PIPE)
+                stdout, stderr = process.communicate()
+                print(f"Output: {stdout.decode('utf-8')}")
+            except Exception:
+                print("Popen failed")
         else:
             raise ValueError("CommandHandler: invalid command descriptor", cmd[0])
