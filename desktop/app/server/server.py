@@ -17,9 +17,7 @@ import os
 
 
 class Server(Factory):
-
     DEFAULT_PORT: Literal = 8000
-
     
     def __init__(self, app):
         self.app = app
@@ -29,7 +27,7 @@ class Server(Factory):
         self.ip = os.popen('hostname -I').read().split(' ')[0]
         self.port = Server.DEFAULT_PORT
         
-        
+
     # def startFactory(self):
     #     pass
 
