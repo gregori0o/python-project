@@ -37,7 +37,10 @@ class CommandHandler(object):
             'shutdown': ['shutdown', '-h', 'now'],
             'volume-up': ['aamixer', 'sset', 'Master', '2%+'],
             'volume-down': ['aamixer, sset' ,'Master', '5%-'],
-            'keyboard': ['onboard']
+            'keyboard': ['onboard'],
+            'brightness-up': ['echo', 'Echo: brightness-up'],
+            'brightness-down': ['echo','Echo: brightness-down'],
+            
         }
         self.browser_commands = {
             'netflix': 'www.netflix.com',
