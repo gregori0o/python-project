@@ -28,14 +28,6 @@ class Server(Factory):
         self.port = Server.DEFAULT_PORT
         
 
-    # def startFactory(self):
-    #     pass
-
-
-    # def stopFactory(self):
-    #     pass
-
-
     def buildProtocol(self, addr: tuple[str, int]) -> "Protocol":
             return AppProtocol(self)
 
