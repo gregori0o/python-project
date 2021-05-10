@@ -10,7 +10,6 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty
 from kivy.uix.image import Image
-import os
 import qrcode
 
 from server.server import Server
@@ -41,9 +40,6 @@ class DesktopApp(App):
         self.command_handler = CommandHandler()
         
 
-
-    
-    
     def build(self):
         self.screen_manager = ScreenManager()
         self.screens = {'main': Screen(name='main'), 'qrcode': Screen(name='qrcode')}
@@ -72,9 +68,9 @@ class DesktopApp(App):
         try:
             self.command_handler.handle(data.decode('utf-8'))
         except ValueError as err:
-            print('ValueError: %s' % (err.args))
+            print('ValueError')
         except TypeError as err:
-            print('TypeError: %s' % (err.args))
+            print('TypeError')
 
 
     def show_qrcode(self, *args):
