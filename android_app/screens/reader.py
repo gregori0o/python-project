@@ -10,7 +10,6 @@ class QRreader (Screen):
     def __init__(self, app, **kwargs):
         super (QRreader, self).__init__(**kwargs)
         self.app = app
-
         QR_layout = FloatLayout()
         label = Label(text="Take photo of QR code or enter data",
                       halign='center',

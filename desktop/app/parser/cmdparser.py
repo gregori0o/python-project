@@ -36,7 +36,7 @@ class CommandHandler(object):
         self.regular_commands = {
             'shutdown': ['shutdown', '-h', 'now'],
             'volume-up': ['aamixer', 'sset', 'Master', '2%+'],
-            'volume-down': ['aamixer, sset' ,'Master', '5%-'],
+            'volume-down': ['aamixer', 'sset','Master', '5%-'],
             'keyboard': ['onboard'],
             'brightness-up': ['echo', 'Echo: brightness-up'],
             'brightness-down': ['echo','Echo: brightness-down']
