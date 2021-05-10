@@ -1,6 +1,8 @@
 """ Desktop application """
 from os.path import supports_unicode_filenames
+from subprocess import PIPE, Popen
 import kivy
+
 kivy.require('2.0.0')
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -12,6 +14,7 @@ import os
 import qrcode
 
 from server.server import Server
+from parser.cmdparser import CommandHandler
 
 class QRCodeButton(Button):
     state = BooleanProperty(True)
@@ -30,17 +33,19 @@ class QRCodeButton(Button):
 
 
 class DesktopApp(App):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.server = Server(self)
         self.server.run()
         self.qrcode_generated = False
+        self.command_handler = CommandHandler()
+        
+
+
     
     
     def build(self):
         self.screen_manager = ScreenManager()
-        
         self.screens = {'main': Screen(name='main'), 'qrcode': Screen(name='qrcode')}
         self.screen_manager.add_widget(self.screens['main'])
         self.screen_manager.add_widget(self.screens['qrcode'])
@@ -64,38 +69,35 @@ class DesktopApp(App):
 
 
     def handle_message(self, data: bytes):
-        print(data.decode('utf-8'))
-        
+        try:
+            self.command_handler.handle(data.decode('utf-8'))
+        except ValueError as err:
+            print('ValueError: %s' % (err.args))
+        except TypeError as err:
+            print('TypeError: %s' % (err.args))
 
-    
+
     def show_qrcode(self, *args):
         qrcode_img = qrcode.make(f"{self.server.ip},{self.server.port}")
         qrcode_img.save('qrcode/qrcode.png', format='png')
         if not self.qrcode_generated:
             self.qrcode_screen_layout.add_widget(Image(source='qrcode/qrcode.png'))
             self.qrcode_generated = True
-        # else: 
-            # self.qrcode_screen_layout.children[0] = Image(source='qrcode/qrcode.png')
         self.screen_manager.current = 'qrcode'
     
-    # def show_mainscreen(self, instance, pos)
+    
     def goto_main_screen(self, instance):
         print("swapping to main screen")
         self.screen_manager.current = 'main'
     
 
-class MainScreen(Screen):
-    
-    def __init__(self, name: str, qrcode_generator, *args, **kwargs):
-        super.__init__(name=name, **kwargs)
-        self.layout = BoxLayout(orientation='horizontal')
-        
-        self.qrcode_button = QRCodeButton()   
-
-        self.qrcode_button.bind(on_press=qrcode_generator(*args))
-
-        
-        self.add_widget(self.layout)
+# class MainScreen(Screen):
+#     def __init__(self, name: str, qrcode_generator, *args, **kwargs):
+#         super.__init__(name=name, **kwargs)
+#         self.layout = BoxLayout(orientation='horizontal')
+#         self.qrcode_button = QRCodeButton()   
+#         self.qrcode_button.bind(on_press=qrcode_generator(*args))
+#         self.add_widget(self.layout)
         
         
 
