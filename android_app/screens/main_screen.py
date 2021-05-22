@@ -164,13 +164,13 @@ class MainScreen (Screen):
                       pos_hint={'x': .0, 'y': .0})
     	layout.add_widget(no)
 
-    	popup = Popup (title="WARNING!",
+    	self.popup = Popup (title="WARNING!",
     				  title_align='center',
     				  content=layout,
     				  size_hint=(1, 1),
     				  auto_dismiss=False)
-    	no.bind(on_press = popup.dismiss)
-    	popup.open()
+    	no.bind(on_press = self.popup.dismiss)
+    	self.popup.open()
 
 
     def execute_buttons (self, button, *args):
@@ -188,6 +188,7 @@ class MainScreen (Screen):
         self.popup()
       elif button == self.yes:
         self.app.connection.write("cmd shutdown".encode('utf-8'))
+        self.popup.dismiss ()
       elif button == self.button_r3:
         self.app.connection.write("cmd keyboard".encode('utf-8'))
       elif button == self.button_l4:
