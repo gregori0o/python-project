@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.graphics import Color, Rectangle
+from kivy.uix.popup import Popup
 
 
 class TouchPad (FloatLayout):
@@ -84,6 +85,7 @@ class MainScreen (Screen):
                       size_hint=(.4, .1),
                       pos_hint={'x': .0, 'y': .57})
         self.button_l3.bind(on_press = self.execute_buttons)
+        self.yes = None
         main_layout.add_widget(self.button_l3)
         self.button_r3 = Button(text="Keyboard",
                       halign='center',
@@ -111,12 +113,41 @@ class MainScreen (Screen):
 
     def exit (self, *args):
       if self.app.connection:
-        self.app.connection.write("disconnect".encode('utf-8'))
+        self.app.connection.write("cmd disconnect".encode('utf-8'))
         self.app.connection = None
       self.manager.current = 'start'
 
     def command (self, *args):
     	self.manager.current = 'command'
+
+    def popup (self):
+    	layout = FloatLayout()
+    	label = Label (text="Are you sure to shutdown the computer?",
+    				  halign='center',
+                      font_size='20sp',
+                      size_hint=(1, .2),
+                      pos_hint={'x': 0, 'y': 0.7})
+    	layout.add_widget(label)
+    	self.yes = Button (text="YES",
+    				  halign='center',
+    				  size_hint=(1., .3),
+                      pos_hint={'x': .0, 'y': .35})
+    	self.yes.bind(on_press = self.execute_buttons)
+    	layout.add_widget(self.yes)
+    	no = Button (text="NO",
+    				  halign='center',
+    				  size_hint=(1., .3),
+                      pos_hint={'x': .0, 'y': .0})
+    	layout.add_widget(no)
+
+    	popup = Popup (title="WARNING!",
+    				  title_align='center',
+    				  content=layout,
+    				  size_hint=(1, 1),
+    				  auto_dismiss=False)
+    	no.bind(on_press = popup.dismiss)
+    	popup.open()
+
 
     def execute_buttons (self, button, *args):
       if not self.app.connection:
@@ -130,6 +161,8 @@ class MainScreen (Screen):
       elif button == self.button_r2:
         self.app.connection.write("cmd volume-down".encode('utf-8'))
       elif button == self.button_l3:
+        self.popup()
+      elif button == self.yes:
         self.app.connection.write("cmd shutdown".encode('utf-8'))
       elif button == self.button_r3:
         self.app.connection.write("cmd keyboard".encode('utf-8'))
