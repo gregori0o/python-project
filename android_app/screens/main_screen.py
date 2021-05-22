@@ -10,31 +10,55 @@ from kivy.uix.popup import Popup
 class TouchPad (FloatLayout):
 	def __init__ (self, app, **kwargs):
 		super (TouchPad, self).__init__(**kwargs)
+		self.touch_field = (kwargs["size_hint"][1]*0.2, kwargs["size_hint"][1])
 		with self.canvas.before:
 			Color(0.22, 0.24, .26, mode='rgb')
 			self.rect = Rectangle(size=self.size, pos=self.pos)
 		self.bind(size=self._update_rect, pos=self._update_rect)
 		self.app = app
 		self.color = 'blue'
-		left = Button(size_hint=(.5, .1),
+		left = Button(size_hint=(.5, .2),
 		              pos_hint={'x': .0, 'y': .0})
 		left.bind(on_press = self.left)
 		self.add_widget(left)
-		right = Button(size_hint=(.5, .1),
+		right = Button(size_hint=(.5, .2),
 	                  pos_hint={'x': .5, 'y': .0})
 		right.bind(on_press = self.right)
 		self.add_widget(right)
-		
+		self.coordinates = (-1, -1)
 
+	#def on_touch_down (self, touch): -- overright button
+	#	pass
+
+	def on_touch_move (self, touch):
+		y = touch.spos[1]
+		if y < self.touch_field[0] or y > self.touch_field[1]:
+			self.coordinates = (-1, -1)
+			return
+		if self.coordinates[0] != -1 and self.app.connection:
+			new_coord = touch.spos
+			vector = (new_coord[0] - self.coordinates[0], (-1)*(new_coord[1] - self.coordinates[1]) / (self.touch_field[1] - self.touch_field[0]))
+			msg = "mouse vector " + str(vector[0]) + " " + str(vector[1]) + " "
+			self.app.connection.write(msg.encode('utf-8'))
+		self.coordinates = touch.spos
+
+	def on_touch_up (self, touch):
+		y = touch.spos[1]
+		if y < self.touch_field[0] or y > self.touch_field[1]:
+			return
+		self.coordinates = (-1, -1)
+		
 	def _update_rect(self, instance, value):
 		self.rect.pos = instance.pos
 		self.rect.size = instance.size
 
 	def left (self, *args):
-		pass
+		if self.app.connection:
+			self.app.connection.write("mouse left ".encode('utf-8'))
 
 	def right (self, *args):
-		pass
+		if self.app.connection:
+			self.app.connection.write("mouse right ".encode('utf-8'))
 
 
 class MainScreen (Screen):

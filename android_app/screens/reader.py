@@ -26,7 +26,7 @@ class QRreader (Screen):
                       multiline=False,
                       readonly=False,
                       halign="left",
-                      font_size=30,
+                      font_size=100,
                       size_hint=(.8, .1),
                       pos_hint={'x': .1, 'y': 0.4})
         QR_layout.add_widget(self.read_text)

@@ -22,10 +22,10 @@ class StartScreen (Screen):
                         To connect with latest data -> 'Restart'.\n
                         To connect with new data -> 'Connect'.""",
                       markup=True,
-                      halign='center',
+                      halign='left',
                       font_size='20sp',
-                      size_hint=(1, .2),
-                      pos_hint={'x': .0, 'y': 0.6})
+                      size_hint=(1, .35),
+                      pos_hint={'x': .0, 'y': 0.53})
         first_layout.add_widget(label_info)
         to_connect = Button(text="Connect",
                       halign='center',

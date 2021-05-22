@@ -29,6 +29,7 @@ class Parser(object):
 
 
 import webbrowser as wb
+from pynput.mouse import Button, Controller
 from subprocess import PIPE, Popen, STDOUT
 import os
 
@@ -48,6 +49,7 @@ class CommandHandler(object):
             'youtube': 'https://www.youtube.com'
         }
         self.parser = Parser()
+        self.mouse = Controller()
 
 
     def handle(self, command: str):
@@ -55,8 +57,9 @@ class CommandHandler(object):
         if cmd[0] == 'cmd':
             if cmd[1] in self.browser_commands.keys():
                 wb.open(self.browser_commands[cmd[1]], 1)
+                print (self.browser_commands[cmd[1]])
             elif cmd[1] in self.regular_commands.keys():
-                Popen(self.regular_commands[cmd[1]], stdout=STDOUT)
+                Popen(self.regular_commands[cmd[1]], stdout=PIPE)
             else:
                 print("CommandHandler: invalid command")
         elif cmd[0] == 'ccmd':
@@ -67,5 +70,19 @@ class CommandHandler(object):
                 print(f"Output: {stdout.decode('utf-8')}")
             except Exception:
                 print("Popen failed")
+        elif cmd[0] == 'mouse':
+            if cmd[1] == 'left':
+                self.mouse.press(Button.left)
+                self.mouse.release(Button.left)
+            elif cmd[1] == 'right':
+                self.mouse.press(Button.right)
+                self.mouse.release(Button.right)
+            elif cmd[1] == 'vector':
+                ratio = 1500
+                x = float(cmd[2]) * ratio
+                y = float(cmd[3]) * ratio
+                self.mouse.move(x, y)
+            else:
+                print("CommandHandler: invalid command")
         else:
             raise ValueError("CommandHandler: invalid command descriptor", cmd[0])
