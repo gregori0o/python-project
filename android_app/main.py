@@ -26,7 +26,7 @@ class MainApp(App):
     def on_connection(self, connection):
         self.print_message("Connected successfully!")
         self.connection = connection
-        connection.write("[DEV] device name, device ip".encode('utf-8'))
+        # connection.write("[DEV] device name, device ip".encode('utf-8'))
         #sleep (1)
         self.screenmanager.current = 'main'
 

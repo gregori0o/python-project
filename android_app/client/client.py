@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from kivy.support import install_twisted_reactor
+from twisted.python.failure import Failure
 
 install_twisted_reactor()
 
@@ -10,11 +11,20 @@ from twisted.internet import reactor
 
 
 class ClientProtocol(Protocol):
+    
+    # def __init__(self, factory: Factory):
+        # self.factory = factory
+
     def connectionMade(self):
         self.factory.app.on_connection(self.transport)
 
     def dataReceived(self, data):
         self.factory.app.print_message(data.decode('utf-8'))
+
+    # def connectionLost(self, reason: Failure):
+    #     self.factory.app.screenmanager.current = 'start'
+    #     return super().connectionLost(reason=reason)
+
 
 
 class ClientFactory(Factory):
@@ -34,3 +44,7 @@ class ClientFactory(Factory):
         self.app.print_message('Connection failed.')
         #sleep(1)
         self.app.screenmanager.current = 'QR'
+        
+    # def buildProtocol(self, addr: tuple[str, int]) -> "Protocol":
+    #     return ClientProtocol()
+    #     return super().buildProtocol(addr)
