@@ -1,4 +1,5 @@
 """ Desktop application """
+import os
 import kivy
 
 kivy.require('2.0.0')
@@ -19,6 +20,15 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        current_dir = os.scandir('./')
+        for entry in current_dir:
+            if entry.name == 'qrcode' and entry.is_dir():
+                break
+        else:
+            os.mkdir('./qrcode', 0o777)
+                
+        
         try: 
             self.server = Server(self)
         except OSError as err:
