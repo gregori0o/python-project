@@ -23,11 +23,13 @@ class AppProtocol(Protocol):
             self.transport.getPeer().host
         )
         self.factory.ip = self.transport.getHost().host
+        self.factory.connection = self
         #debug
         print(f"Connection estabilished with {self.factory.client}") 
 
         
     def connectionLost(self, reason: Failure):
         print(f"Closed connection with {self.factory.client}")
-        self.factory.client.port = None
-        self.factory.client.host = None
+        self.factory.client = None
+        self.factory.connection = None
+        

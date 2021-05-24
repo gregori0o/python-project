@@ -1,25 +1,21 @@
 """ Desktop application """
-from os.path import supports_unicode_filenames
-from subprocess import PIPE, Popen
 import kivy
 
 kivy.require('2.0.0')
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import BooleanProperty
 from kivy.uix.image import Image
 import qrcode
 
 from server.server import Server, ServerInfo
-from parser.cmdparser import CommandHandler
+from parser.cmdparser import CommandHandler, CommandHandlerObserver
 
 from ui.buttons import QRCodeButtonObserver
 from ui.screens import MainScreen, QRCodeScreen
 
 
-class DesktopApp(App, QRCodeButtonObserver):
+class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -31,6 +27,7 @@ class DesktopApp(App, QRCodeButtonObserver):
 
         # self.qrcode_generated = False
         self.command_handler = CommandHandler()
+        self.command_handler.add_observer(self)
         self.server_info = self.server.info
         self.server.run()
         
@@ -52,7 +49,7 @@ class DesktopApp(App, QRCodeButtonObserver):
 
     def handle_message(self, data: bytes):
         try:
-            self.command_handler.handle(data.decode('utf-8'))
+            self.command_handler(data.decode('utf-8'))
         except ValueError as err:
             print('ValueError')
         except TypeError as err:
@@ -75,6 +72,11 @@ class DesktopApp(App, QRCodeButtonObserver):
 
     def on_back_main_pressed(self):
         self.screen_manager.current = 'main'
+        
+        
+    def on_disconnect(self):
+        self.server.closeConnection()
+        
         
     
 def main():

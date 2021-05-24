@@ -1,4 +1,5 @@
 class Parser(object):
+
     def __init__(self):
         pass
     
@@ -32,6 +33,14 @@ import webbrowser as wb
 from pynput.mouse import Button, Controller
 from subprocess import PIPE, Popen, STDOUT
 import os
+import abc
+
+
+class CommandHandlerObserver(abc.ABC):
+    @abc.abstractmethod
+    def on_disconnect():
+        raise NotImplementedError
+    
 
 class CommandHandler(object):
     def __init__(self):
@@ -42,7 +51,6 @@ class CommandHandler(object):
             'keyboard': ['onboard'],
             'brightness-up': ['echo', 'Echo: brightness-up'],
             'brightness-down': ['echo','Echo: brightness-down']
-            
         }
         self.browser_commands = {
             'netflix': 'https://www.netflix.com',
@@ -50,9 +58,10 @@ class CommandHandler(object):
         }
         self.parser = Parser()
         self.mouse = Controller()
+        self.observers: list[CommandHandlerObserver] = []
 
 
-    def handle(self, command: str):
+    def __call__(self, command: str):
         cmd = self.parser(command)
         if cmd[0] == 'cmd':
             if cmd[1] in self.browser_commands.keys():
@@ -60,6 +69,8 @@ class CommandHandler(object):
                 print (self.browser_commands[cmd[1]])
             elif cmd[1] in self.regular_commands.keys():
                 Popen(self.regular_commands[cmd[1]], stdout=PIPE)
+            elif cmd[1] == 'disconnect':
+                self.on_disconnect()
             else:
                 print("CommandHandler: invalid command")
         elif cmd[0] == 'ccmd':
@@ -86,3 +97,13 @@ class CommandHandler(object):
                 print("CommandHandler: invalid command")
         else:
             raise ValueError("CommandHandler: invalid command descriptor", cmd[0])
+
+
+    def add_observer(self, observer: CommandHandlerObserver):
+        if observer not in self.observers:
+            self.observers.append(observer)
+
+            
+    def on_disconnect(self):
+        for observer in self.observers:
+            observer.on_disconnect()

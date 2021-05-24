@@ -52,13 +52,12 @@ class Server(Factory):
     def __init__(self, app):
         self.app = app
         self.client = None
-        
+        self.connection = None
         # spliting in case device is connected on more than one interface
         # this code is OS specific
         self._ip = os.popen('hostname -I').read().split(' ')[0]
-
-        # may throw IOError exception
         self._port = self._find_free_port(Server.DEFAULT_PORT)
+
         
     def _find_free_port(self, port: int = 4000, max_port: int = 60_000):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,19 +72,22 @@ class Server(Factory):
     
 
     def buildProtocol(self, addr: tuple[str, int]) -> "Protocol":
-            print('Server.buildProtocol:', addr)
-            return AppProtocol(self)
+        print('Server.buildProtocol:', addr)
+        return AppProtocol(self)
             
-    
+
     def run(self):
         endpoint = TCP4ServerEndpoint(reactor, self._port, interface='')
         endpoint.listen(self)
         # reactor.run()
+
+        
+    def closeConnection(self):
+        if self.connection is not None:
+            self.connection.transport.loseConnection()
+            self.connection = None
+        
     
     @property
     def info(self):
         return ServerInfo(ip=self._ip, port=self._port)
-        
-    
-    
-        
