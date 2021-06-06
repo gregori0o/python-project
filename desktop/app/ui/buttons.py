@@ -25,9 +25,9 @@ class QRCodeButton(Button):
         
 
     def on_touch_down(self, touch):
-        print('qrcode button pressed')
+        # print('qrcode button pressed')
         if self.collide_point(*touch.pos):
-            print("QRCodeButton pressed at", touch.pos, 'Notifing observers')
+            # print("QRCodeButton pressed at", touch.pos, 'Notifing observers')
             for observer in self._observers:
                 observer.on_qr_button_pressed()
             return True

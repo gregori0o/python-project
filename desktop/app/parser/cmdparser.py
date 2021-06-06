@@ -78,7 +78,8 @@ class CommandHandler(object):
                 print(f'Executing: {cmd[1:]}')
                 process = Popen(cmd[1:], stdout=PIPE, stderr=PIPE)
                 stdout, stderr = process.communicate()
-                print(f"Output: {stdout.decode('utf-8')}")
+                output = stdout.decode('utf-8')
+                print(f"Output: {output}")
             except Exception:
                 print("Popen failed")
         elif cmd[0] == 'mouse':

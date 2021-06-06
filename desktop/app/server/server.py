@@ -56,10 +56,10 @@ class Server(Factory):
         # spliting in case device is connected on more than one interface
         # this code is OS specific
         self._ip = os.popen('hostname -I').read().split(' ')[0]
-        self._port = self._find_free_port(Server.DEFAULT_PORT)
+        self._port = self.__find_free_port(Server.DEFAULT_PORT)
 
         
-    def _find_free_port(self, port: int = 4000, max_port: int = 60_000):
+    def __find_free_port(self, port: int = 4000, max_port: int = 60_000):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         while port <= max_port:
             try:
@@ -68,7 +68,7 @@ class Server(Factory):
                 return port
             except OSError:
                 port += 1
-        raise IOError('No free port available')
+        raise OSError('No free port available')
     
 
     def buildProtocol(self, addr: tuple[str, int]) -> "Protocol":

@@ -15,7 +15,6 @@ from parser.cmdparser import CommandHandler, CommandHandlerObserver
 from ui.buttons import QRCodeButtonObserver
 from ui.screens import MainScreen, QRCodeScreen
 
-
 class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
 
     def __init__(self, **kwargs):
@@ -67,11 +66,9 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
 
 
     def show_qrcode(self, *args):
-        qrcode_img = qrcode.make(f"{self.server_info.ip},{self.server_info.port}")
+        server_info = self.server.info
+        qrcode_img = qrcode.make(f"{server_info.ip},{server_info.port}")
         qrcode_img.save('qrcode/qrcode.png', format='png')
-        # if not self.qrcode_generated:
-            # self.add_widget(Image(source='qrcode/qrcode.png'))
-            # self.qrcode_generated = True
         self.qrcode_screen.qrcode = Image(source='qrcode/qrcode.png')
         self.screen_manager.current = 'qrcode'
     
