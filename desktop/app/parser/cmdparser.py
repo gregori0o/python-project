@@ -44,14 +44,26 @@ class CommandHandlerObserver(abc.ABC):
 
 class CommandHandler(object):
     def __init__(self):
-        self.regular_commands = {
-            'shutdown': ['shutdown', '-h', 'now'],
-            'volume-up': ['amixer', 'sset', 'Master', '2%+'],
-            'volume-down': ['amixer', 'sset','Master', '5%-'],
-            'keyboard': ['onboard'],
-            'brightness-up': ['echo', 'Echo: brightness-up'],
-            'brightness-down': ['echo','Echo: brightness-down']
-        }
+        if os.name == 'posix':
+            self.regular_commands = {
+                'shutdown': ['shutdown', '-h', 'now'],
+                'volume-up': ['amixer', 'sset', 'Master', '2%+'],
+                'volume-down': ['amixer', 'sset','Master', '5%-'],
+                'keyboard': ['onboard'],
+                'brightness-up': ['echo', 'Echo: brightness-up'],
+                'brightness-down': ['echo','Echo: brightness-down']
+            }
+        elif os.name == 'nt':
+            self.regular_commands = {
+                'shutdown': ['nircmd.exe', 'exitwin', 'poweroff'],
+                'volume-up': ['nircmd.exe', 'changesysvolume', '2000'],
+                'volume-down': ['nircmd.exe', 'changesysvolume','-5000'],
+                'keyboard': ['osk'],
+                'brightness-up': ['nircmd.exe', 'changebrightness', '2'],
+                'brightness-down': ['nircmd.exe','changebrightness', '-2']
+            }
+        else:
+            raise NotImplementedError
         self.browser_commands = {
             'netflix': 'https://www.netflix.com',
             'youtube': 'https://www.youtube.com'
@@ -66,7 +78,6 @@ class CommandHandler(object):
         if cmd[0] == 'cmd':
             if cmd[1] in self.browser_commands.keys():
                 wb.open(self.browser_commands[cmd[1]], 1)
-                print (self.browser_commands[cmd[1]])
             elif cmd[1] in self.regular_commands.keys():
                 Popen(self.regular_commands[cmd[1]], stdout=PIPE)
             elif cmd[1] == 'disconnect':
