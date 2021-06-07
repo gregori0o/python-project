@@ -16,19 +16,19 @@ class QRCodeButton(Button):
     def __init__(self, **kwargs):
         super(QRCodeButton, self).__init__(**kwargs)
         self.text = 'Click me to get the QR code'
-        self._observers: list[QRCodeButtonObserver] = []
+        self.__observers: list[QRCodeButtonObserver] = []
         
         
     def add_observer(self, observer: QRCodeButtonObserver):
-        if observer not in self._observers:
-            self._observers.append(observer)
+        if observer not in self.__observers:
+            self.__observers.append(observer)
         
 
     def on_touch_down(self, touch):
         # print('qrcode button pressed')
         if self.collide_point(*touch.pos):
             # print("QRCodeButton pressed at", touch.pos, 'Notifing observers')
-            for observer in self._observers:
+            for observer in self.__observers:
                 observer.on_qr_button_pressed()
             return True
         return super().on_touch_down(touch)

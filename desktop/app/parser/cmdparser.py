@@ -26,9 +26,11 @@ class Parser(object):
         
     def __call__(self, command: str):
         # cmd = command.split(sep=' ')
-        return command.split(sep=' ')
+        self.command = command
+        return self.command
 
 
+from typing import Union
 import webbrowser as wb
 from pynput.mouse import Button, Controller
 from subprocess import PIPE, Popen, STDOUT
@@ -73,7 +75,7 @@ class CommandHandler(object):
         self.observers: list[CommandHandlerObserver] = []
 
 
-    def __call__(self, command: str):
+    def __call__(self, command: str) -> Union[tuple[None, None], tuple[str, str]]:
         cmd = self.parser(command)
         if cmd[0] == 'cmd':
             if cmd[1] in self.browser_commands.keys():
@@ -91,6 +93,7 @@ class CommandHandler(object):
                 stdout, stderr = process.communicate()
                 output = stdout.decode('utf-8')
                 print(f"Output: {output}")
+                return ' '.join(cmd[1:]), output
             except Exception:
                 print("Popen failed")
         elif cmd[0] == 'mouse':
@@ -109,6 +112,7 @@ class CommandHandler(object):
                 print("CommandHandler: invalid command")
         else:
             raise ValueError("CommandHandler: invalid command descriptor", cmd[0])
+        return None, None
 
 
     def add_observer(self, observer: CommandHandlerObserver):

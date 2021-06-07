@@ -1,24 +1,64 @@
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.graphics import Rectangle
-from server.server import ServerInfo
+from kivy.properties import ObjectProperty
+import server
+from server.server import ServerInfo, ConnectionObserver
 from ui.buttons import QRCodeButton
 import abc
 
-
 class MainScreen(Screen):
-    
+
     def __init__(self, name: str, server_info: ServerInfo, **kwargs):
         super().__init__(name=name, **kwargs)
-        print(self.manager)
-        self.layout = BoxLayout(orientation='horizontal')
+        # print(self.manager)
         self.qrcode_button = QRCodeButton()
+        self.qrcode_button.size_hint = (.3, .2)
+        self.qrcode_button.pos_hint = {'x': .7, 'y': .8}
+        # self.layout = BoxLayout(orientation='horizontal')
+        self.layout = FloatLayout()
         # self.qrcode_button.bind(state=self.show_qrcode)
-        self.layout.add_widget(self.qrcode_button)
-        self.add_widget(self.layout)
 
+        self.status_label = Label(text='No device connected\nip: -\nport: -',
+                                  font_size=20,
+                                  pos_hint={'center_x': .85, 'center_y': .7})
+        self.status_label.color = [1.0, 0, 0, 1]
+        
+        self.command_output_header = Label(text='===== COMMAND OUTPUT =====',
+                                    font_size=20,
+                                    pos_hint={'center_x': .4, 'center_y': .95})
+        self.command_output = Label(text='Command:',
+                                    font_size=20,
+                                    pos_hint={'x': -.4, 'y': 0.9})
+        
+        self.layout.add_widget(self.status_label)
+        self.layout.add_widget(self.qrcode_button)
+        self.layout.add_widget(self.command_output_header)
+        self.layout.add_widget(self.command_output)
+        self.add_widget(self.layout)
+        
+
+    def on_connection_made(self, server_info: ServerInfo) -> None:
+        self.status_label.text = f'Device connected\nip: {server_info.ip}\nport: {server_info.port}'
+        self.status_label.color = [0, 1.0, 0, 1]
+
+        
+    def on_connection_lost(self, server_info: ServerInfo) -> None:
+        self.status_label.text = f'Device disconnected\nip: -\nport: -'
+        self.status_label.color = [1.0, 0, 0, 1]
+
+        
+    def on_command_output(self, command: str, output: str) -> None:
+        if command is not None or output is not None:
+            self.command_output.text = 'Command: ' + command + '\nOutput:\n' + output
+            self.command_output.pos_hint = {'x': 0, 'y': 0.1}
+
+        
+            
 
 class BackMainButtonObserver(abc.ABC):
 

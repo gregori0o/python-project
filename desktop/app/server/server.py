@@ -14,9 +14,22 @@ import socket
 import os
 
 
-
-
 ServerInfo = namedtuple('ServerInfo', 'ip port')
+
+
+from abc import ABC, abstractmethod
+class ConnectionObserver(ABC):
+    
+    @abstractmethod
+    def on_connection_made(self, server_info: ServerInfo) -> None:
+        raise NotImplementedError
+
+
+    @abstractmethod
+    def on_connection_lost(self, server_info: ServerInfo) -> None:
+        raise NotImplementedError
+
+
 
 # class ServerInfo(object):
 #     def __init__(self, ip: str, port: int):
@@ -55,8 +68,9 @@ class Server(Factory):
         self.connection = None
         # spliting in case device is connected on more than one interface
         # this code is OS specific
-        self._ip = os.popen('hostname -I').read().split(' ')[0]
-        self._port = self.__find_free_port(Server.DEFAULT_PORT)
+        self.__ip = os.popen('hostname -I').read().split(' ')[0]
+        self.__port = self.__find_free_port(Server.DEFAULT_PORT)
+        self.__connection_observers: list[ConnectionObserver] = []
 
         
     def __find_free_port(self, port: int = 4000, max_port: int = 60_000):
@@ -77,17 +91,29 @@ class Server(Factory):
             
 
     def run(self):
-        endpoint = TCP4ServerEndpoint(reactor, self._port, interface='')
+        endpoint = TCP4ServerEndpoint(reactor, self.__port, interface='')
         endpoint.listen(self)
         # reactor.run()
 
         
     def closeConnection(self):
         if self.connection is not None:
+            print('Server.closeConnection')
             self.connection.transport.loseConnection()
             self.connection = None
+            for observer in self.__connection_observers:
+                observer.on_connection_lost(self.info)
         
     
     @property
     def info(self):
-        return ServerInfo(ip=self._ip, port=self._port)
+        return ServerInfo(ip=self.__ip, port=self.__port)
+        
+
+    def add_observer(self, observer: ConnectionObserver):
+        self.__connection_observers.append(observer)
+        
+    
+    def on_connection_made(self, server_info: ServerInfo) -> None:
+        for observer in self.__connection_observers:
+            observer.on_connection_made(server_info)

@@ -2,6 +2,8 @@
 import os
 import kivy
 
+import server
+
 kivy.require('2.0.0')
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -9,13 +11,13 @@ from kivy.properties import BooleanProperty
 from kivy.uix.image import Image
 import qrcode
 
-from server.server import Server, ServerInfo
+from server.server import ConnectionObserver, Server, ServerInfo
 from parser.cmdparser import CommandHandler, CommandHandlerObserver
 
 from ui.buttons import QRCodeButtonObserver
 from ui.screens import MainScreen, QRCodeScreen
 
-class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
+class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver, ConnectionObserver):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -27,7 +29,6 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
         else:
             os.mkdir('./qrcode', 0o777)
                 
-        
         try: 
             self.server = Server(self)
         except OSError as err:
@@ -37,6 +38,7 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
         # self.qrcode_generated = False
         self.command_handler = CommandHandler()
         self.command_handler.add_observer(self)
+        self.server.add_observer(self)
         self.server_info = self.server.info
         self.server.run()
         
@@ -58,11 +60,12 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
 
     def handle_message(self, data: bytes):
         try:
-            self.command_handler(data.decode('utf-8'))
+            command, output = self.command_handler(data.decode('utf-8'))
+            self.main_screen.on_command_output(command, output)
         except ValueError as err:
-            print('ValueError')
+            print(f'ValueError for input {data.decode("utf-8")}')
         except TypeError as err:
-            print('TypeError')
+            print(f'TypeError for input {data.decode("utf-8")}')
 
 
     def show_qrcode(self, *args):
@@ -83,6 +86,15 @@ class DesktopApp(App, QRCodeButtonObserver, CommandHandlerObserver):
         
     def on_disconnect(self):
         self.server.closeConnection()
+
+        
+    def on_connection_lost(self, server_info: ServerInfo) -> None:
+        self.main_screen.on_connection_lost(server_info)
+
+    
+    def on_connection_made(self, server_info: ServerInfo) -> None:
+        self.screen_manager.current = 'main'
+        self.main_screen.on_connection_made(server_info)
         
         
     
