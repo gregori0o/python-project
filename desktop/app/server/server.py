@@ -68,7 +68,11 @@ class Server(Factory):
         self.connection = None
         # spliting in case device is connected on more than one interface
         # this code is OS specific
-        self.__ip = os.popen('hostname -I').read().split(' ')[0]
+        if os.name == 'posix':
+            self.__ip = os.popen('hostname -I').read().split(' ')[0]
+        else:
+            tmp = socket.gethostname()
+            self.__ip = socket.gethostbyname(tmp).split()[0]
         self.__port = self.__find_free_port(Server.DEFAULT_PORT)
         self.__connection_observers: list[ConnectionObserver] = []
 
