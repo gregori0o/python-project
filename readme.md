@@ -1,67 +1,48 @@
-## KL
+# Remote Control
 
-1. Możliwość zdalnego wykonywania komend systemowych na komputerze. 
-2. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. 
-3. Wpisywanie dowolnych komend i wykonywanie ich na komputerze z poziomu telefonu (zatem klawiatura).   
+This is remote control of your computer, which you can install on your mobile phone. This project was created for python course at AGH UST in 2021.
 
+## Description
 
-Ewentualnie interakcje w drugą stronę. 
+This project consists two parts. First part is app on computer.
+This app generates qr code and create server to connect by mobile phone.
 
+<img src="pics/desktop.png" alt="Desktop app" height="400"/>
 
-## Linki
+Second part is mobile app. This app allows to connect with computer by wi-fi and control that. 
+We connect by scan a QR code on mobile phone.
 
-1. [StackOverFlow - budowanie androidowej aplikacji w Pythonie](https://stackoverflow.com/questions/49955489/how-to-develop-android-app-completely-using-python)
-2. [BeeWare](https://beeware.org/)
-3. [Talk na temat BeeWare](https://www.youtube.com/watch?v=xezYYBL7nk0)
-4. [Kivy](https://kivy.org/#home)
-5. [Webowe apki w pythonie](https://opensource.com/article/20/8/python-android-mobile)
-6. https://people.csail.mit.edu/albert/bluez-intro/c212.html
-7. https://www.pythonpool.com/an-introduction-to-python-for-android-development/
-8. https://github.com/eliasdorneles/tictactoe-voc
-9. https://code.google.com/archive/p/pybluez/downloads
-10. https://github.com/pybluez/pybluez
+<img src="pics/qr.png" alt="Scanning qr-code" height="600"/>
 
+#### Functionalities:
 
-## Harmonogram prac
+1. Enter some command.
+2. Control volume and brightness of screen.
+3. Shutdown the computer.
+4. Open on-screen keyboard.
+5. Open some sites by one click (e.g. Youtube, Netflix).
+6. Control cursor.
 
-Grzegorz Legęza -- (G)
-Kacper Kafara -- (K)
+<img src="pics/app.png" alt="Functionalities" height="600"/>
 
-### 3 laboratoria
+## Technologies
 
-*  Zaimplementowanie modułu sieciowego, połączenie telefonu z komputerm (możliwość przesyłu i odbioru komunikatów)
-    * Generowanie kodu QR z informacjami potrzebnymi do nawiązania połączenia. (K)
-    * Wyświetlenie wygenerowanego kodu QR na wyświetlaczu. (K)
-    * Szkielet aplikacji na androida (jeden przycik pozwalający na przejście do aparatu i zczytanie kodu QR) (G)
-    * Nawiązywanie połącznia (przesłanie) (G)
+The app was written in python. We use kivy module to create GUI and twisted module to connect devices.
 
+## How to use
 
-### 4 laboratoria
+You have to install compressed version app [android_app/release/rc-1.5-armeabi-v7a-debug.apk](https://github.com/gregori0o/python-project/tree/main/android_app/release/rc-1.5-armeabi-v7a-debug.apk) on your mobile phone.
 
-* Zaimplementowanie prototypu interfejsu desktopowego. (K)
-* Podłączenie generowania kodu QR pod interfejs. (K)
-* Zaimplemenotwanie interfejsu na androida (G)
-    * Przyciski uruchamiające poszczególne komendy. (G) 
+Next step is run server on your computer. You have to clone this repository and run [desktop/app/main.py](https://github.com/gregori0o/python-project/blob/main/desktop/app/main.py).
+To run this code you need modules:
+* Kivy
+* qrcode
+* twisted
+* pynput
+* image
 
+After ran you must click button to generate QR code. You must scan this QR by mobile app and make connection.
 
-### 5 laboratoria
+<br><br>
 
-*  Implementacja funkcjonalności:
-    1. Możliwość zdalnego wykonywania wybranych komend (przewidzianych w funkcjonalnościach) (K & G)
-
-### 6 laboratoria
-
-1. Możliwość zdalnego wykonania dowolnej komendy (komenda wpisywana przez użytkownika) (K)
-2. Możliwość nawigowania kursorem z poziomu telefonu oraz wykonywanie nim akcji. (G)
-3. Ewentualne dokończenie interfejsu (desktop / android). (K & G (w zależności od pozostałych zadań))
-
-
-### Funkcjonalności 
-
-1. Shutdown
-2. Sterowanie głośnością
-3. Poziom jasności 
-4. Sterowanie instancjami przeglądrek (moduł browser)   
-5. Youtube / Netflix (skrót)
-6. Rozłączenie 
-7. Komenda **autorska**  
+Created by: [@gregori0o](https://github.com/gregori0o) and [@kkafar](https://github.com/kkafar)
