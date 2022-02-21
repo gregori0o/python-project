@@ -27,7 +27,7 @@ We connect by scan a QR code on mobile phone.
 
 ## Technologies
 
-The app was written in python. We use kivy module to create GUI and twisted module to connect devices.
+The app was written in python. We used kivy module to create GUI and twisted module to connect devices. We used buildozer module to create android app.
 
 ## How to use
 
